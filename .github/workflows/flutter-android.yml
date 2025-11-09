@@ -22,30 +22,24 @@ jobs:
       - name: 🐦 Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          # Sticking with 3.22.0, as the error is linkage, not version-specific.
           flutter-version: '3.22.0'
           channel: 'stable'
           cache: true 
 
-      # CRITICAL NEW STEP: Ensure the package cache is clean before creation/install.
-      - name: 🧹 Clean Dart/Pub Cache
-        run: flutter pub cache repair
-
-      - name: 🛠️ Initialize Project Structure (with Overwrite)
-        # CRITICAL FIX: --overwrite ensures the boilerplate files are completely 
-        # rebuilt over any existing conflicts, resolving context issues.
-        run: flutter create --project-name neon_pong_revival --overwrite .
+      # CRITICAL FIX: The flutter create . step is REMOVED. 
+      # Its purpose (generating android/ and ios/ folders) is complete. 
+      # Running it now would only overwrite lib/main.dart with the blank template.
 
       - name: 📦 Install Dart & Flutter Packages
-        # This step now installs packages into the freshly-created, clean structure.
         run: flutter pub get
 
-      - name: 🧹 Clean Build Cache (Post-Pub Get)
-        # Ensures a clean start before compilation begins.
+      - name: 🧹 Clean Build Cache
+        # Ensures a clean start with the correct code base.
         run: flutter clean
 
       - name: 🧱 Build Release APK
-        # Standard release build. All environmental issues should now be resolved.
+        # This will now build the project using the *current* lib/main.dart 
+        # which you need to ensure contains the game code.
         run: flutter build apk --release
 
       - name: 📤 Upload APK Artifact
