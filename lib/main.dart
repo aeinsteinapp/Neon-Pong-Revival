@@ -192,18 +192,18 @@ class Paddle extends PositionComponent {
   int score = 0;
   Paddle(Vector2 position, Vector2 size) : super(position: position, size: size, anchor: Anchor.topLeft);
 
-  Vector2 get center => Vector2(position.x + size.x / 2, position.y + size.y / 2);
-  set center(Vector2 v) => position = Vector2(position.x - size.x / 2, v.y - size.y / 2);
+  Vector2 get center => Vector2(position.x + width / 2, position.y + height / 2);
+  set center(Vector2 v) => position = Vector2(position.x - width / 2, v.y - height / 2);
 
   void clampToScreen(double height) {
     if (position.y < 0) position.y = 0;
-    if (position.y + size.y > height) position.y = height - size.y;
+    if (position.y + this.height > height) position.y = height - this.height;
   }
 
   @override
   void render(Canvas canvas) {
-    // neon filled rectangle with glow outline
-    final rect = Rect.fromLTWH(position.x, position.y, size.x, size.y);
+    // FIX: Replaced size.x/size.y with width/height
+    final rect = Rect.fromLTWH(position.x, position.y, width, height);
     final fillPaint = Paint()..color = const Color(0xFF220000);
     canvas.drawRect(rect, fillPaint);
 
@@ -221,7 +221,7 @@ class Ball extends PositionComponent with HasGameRef<NeonPongGame> {
 
   Ball(Vector2 position, Vector2 size) : super(position: position, size: size, anchor: Anchor.topLeft);
 
-  Vector2 get center => Vector2(position.x + size.x / 2, position.y + size.y / 2);
+  Vector2 get center => Vector2(position.x + width / 2, position.y + height / 2);
 
   void serve() {
     final rand = Random();
@@ -232,12 +232,12 @@ class Ball extends PositionComponent with HasGameRef<NeonPongGame> {
   }
 
   void reset(Vector2 screenSize) {
-    position = Vector2(screenSize.x / 2 - size.x / 2, screenSize.y / 2 - size.y / 2);
+    position = Vector2(screenSize.x / 2 - width / 2, screenSize.y / 2 - height / 2);
     velocity = Vector2.zero();
     isStopped = true;
   }
 
-  bool outLeft(double w) => position.x <= -size.x;
+  bool outLeft(double w) => position.x <= -width;
   bool outRight(double w) => position.x >= w;
 
   @override
@@ -248,14 +248,14 @@ class Ball extends PositionComponent with HasGameRef<NeonPongGame> {
     position += velocity;
 
     // bounce top/bottom
-    if (position.y <= 0 || position.y + size.y >= gameRef.size.y) {
+    if (position.y <= 0 || position.y + height >= gameRef.size.y) {
       velocity.y = -velocity.y;
     }
 
     // collide with paddles
-    final paddleRect = Rect.fromLTWH(gameRef.player.position.x, gameRef.player.position.y, gameRef.player.size.x, gameRef.player.size.y);
-    final compRect = Rect.fromLTWH(gameRef.computer.position.x, gameRef.computer.position.y, gameRef.computer.size.x, gameRef.computer.size.y);
-    final ballRect = Rect.fromLTWH(position.x, position.y, size.x, size.y);
+    final paddleRect = Rect.fromLTWH(gameRef.player.position.x, gameRef.player.position.y, gameRef.player.width, gameRef.player.height);
+    final compRect = Rect.fromLTWH(gameRef.computer.position.x, gameRef.computer.position.y, gameRef.computer.width, gameRef.computer.height);
+    final ballRect = Rect.fromLTWH(position.x, position.y, width, height);
 
     if (ballRect.overlaps(paddleRect) && velocity.x < 0) {
       velocity.x = -velocity.x * 1.05;
@@ -274,7 +274,8 @@ class Ball extends PositionComponent with HasGameRef<NeonPongGame> {
 
   @override
   void render(Canvas canvas) {
-    final rect = Rect.fromLTWH(position.x, position.y, size.x, size.y);
+    // FIX: Replaced size.x/size.y with width/height
+    final rect = Rect.fromLTWH(position.x, position.y, width, height);
     final fill = Paint()..color = const Color(0xFF220000);
     canvas.drawOval(rect, fill);
 
