@@ -25,15 +25,17 @@ jobs:
           flutter-version: '3.13.0'
           channel: 'stable'
 
-      - name: 🛠️ Initialize Project Structure (The Fix)
-        # CRITICAL FIX: Explicitly set the project name to the valid snake_case name
-        # 'deadman_pong_flutter' to bypass the "is not a valid Dart package name" error
-        # caused by the repository name 'Neon-Pong-Revival'.
+      # Step 1: Initialize the project structure
+      - name: 🛠️ Initialize Project Structure
+        # This generates all boilerplate files using the correct project name.
         run: flutter create --project-name neon_pong_revival .
 
+      # Step 2: Download dependencies AFTER structure is guaranteed
       - name: 📦 Install Dart & Flutter Packages
+        # This downloads 'flame', 'audioplayers', etc., into the new structure.
         run: flutter pub get
 
+      # Step 3: Run the build
       - name: 🧱 Build Release APK
         run: flutter build apk --release
 
