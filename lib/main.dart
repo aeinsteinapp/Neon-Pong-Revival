@@ -1,4 +1,4 @@
-// lib/main.dart
+// lib/main.dart - FINAL CORRECTED CODE
 import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
@@ -137,7 +137,6 @@ class NeonPongGame extends FlameGame with HasTappables, HasDraggables, TapDetect
 
   @override
   void onTapDown(TapDownInfo info) {
-    // toggle pause/resume or restart on tap top-right maybe — keep simple: restart if game over
     if (ball.isStopped) {
       player.score = 0;
       scoreText.text = 'Score: 0';
@@ -149,7 +148,6 @@ class NeonPongGame extends FlameGame with HasTappables, HasDraggables, TapDetect
 
   @override
   void onDragUpdate(int pointerId, DragUpdateInfo info) {
-    // if dragging on left third, move player paddle
     if (info.eventPosition.global.x < size.x * 0.4) {
       player.center = Vector2(player.center.x, info.eventPosition.global.y);
     }
@@ -202,7 +200,6 @@ class Paddle extends PositionComponent {
 
   @override
   void render(Canvas canvas) {
-    // FIX: Replaced size.x/size.y with width/height
     final rect = Rect.fromLTWH(position.x, position.y, width, height);
     final fillPaint = Paint()..color = const Color(0xFF220000);
     canvas.drawRect(rect, fillPaint);
@@ -274,7 +271,6 @@ class Ball extends PositionComponent with HasGameRef<NeonPongGame> {
 
   @override
   void render(Canvas canvas) {
-    // FIX: Replaced size.x/size.y with width/height
     final rect = Rect.fromLTWH(position.x, position.y, width, height);
     final fill = Paint()..color = const Color(0xFF220000);
     canvas.drawOval(rect, fill);
