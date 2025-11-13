@@ -40,9 +40,6 @@ jobs:
           cp index.html www/
           cp style.css www/
           cp game.js www/
-          # Copy assets directory (includes audio)
-          cp -r icon.jpg www/icon.png
-          # CRITICAL ICON FIX: Convert icon.jpg to required icon.png format
           convert icon.png www/icon-512x512.png
 
           
