@@ -9,58 +9,60 @@ jobs:
   build-android:
     name: 📦 Build Android APK via Capacitor
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: 📦 Checkout Repository
         uses: actions/checkout@v4
-        
-      # CRITICAL: Install Android SDK for Gradle
-      - name: 🛠️ Setup Android SDK and NDK
-        uses: android-actions/setup-android@v2
 
-      # Install imagemagick for icon conversion
-      - name: 🖼️ Install Image Tools (Imagemagick)
-        run: sudo apt-get update && sudo apt-get install -y imagemagick
+      # Setup Java (Required for Android builds)
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-      # 1. Setup Node.js Environment
+      # Setup Node.js
       - name: 🛠️ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
-      # 2. Install Dependencies
-      - name: ⬇️ Install Capacitor/Android
+      # Install Dependencies
+      - name: ⬇️ Install Dependencies
         run: npm install
 
-      # 3. Consolidate Web Assets into /www
-      - name: 📂 Prepare Assets for Packaging
+      # Prepare www directory with all assets
+      - name: 📂 Prepare Web Assets
         run: |
-          mkdir www
-          # Copy core HTML/JS files
+          mkdir -p www
           cp index.html www/
           cp style.css www/
           cp game.js www/
-          convert icon.png www/icon-512x512.png
+          # Copy icon if it exists
+          if [ -f icon.png ]; then
+            cp icon.png www/
+          fi
 
-          
-      # 4. Initialize and Prepare Capacitor Project Structure
-      - name: 🔄 Sync Capacitor Project
-        run: |
-          # Use npm run scripts defined in package.json to ensure correct path resolution
-          npm run cap:add:android
-          npm run cap:copy
+      # Add Android platform
+      - name: 🤖 Add Android Platform
+        run: npx cap add android
 
-      # 5. Compile Android APK (Manual Gradle Build)
-      - name: 🧱 Build Release APK (Direct Gradle Command)
+      # Sync web assets to native project
+      - name: 🔄 Sync Capacitor
+        run: npx cap sync android
+
+      # Build Android APK
+      - name: 🧱 Build Release APK
         run: |
-          # Use the official Gradle wrapper inside the generated Android folder
           cd android
-          ./gradlew assembleRelease
-          
-      # 6. Upload Final APK
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      # Upload APK Artifact
       - name: 📤 Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: NeonPong_Capacitor_Android_APK
-          # The location where the manual Gradle build places the APK
-          path: android/app/build/outputs/apk/release/app-release.apk
+          name: NeonPong-Android-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
