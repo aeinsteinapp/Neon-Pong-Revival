@@ -1,9 +1,13 @@
 {
   "appId": "com.deadmanxxxii.neonpong",
   "appName": "Neon Pong Revival",
-  "webDir": "www", 
+  "webDir": "www",
   "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": true
+  },
   "server": {
-    "cleartext": true
+    "cleartext": true,
+    "androidScheme": "https"
   }
 }
