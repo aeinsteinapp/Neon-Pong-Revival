@@ -4,12 +4,13 @@
   "description": "HTML5 Pong wrapped for mobile.",
   "scripts": {
     "start": "npx http-server ./www",
-    "cap:add:android": "node node_modules/@capacitor/cli/dist/cli.js add android",
-    "cap:copy": "node node_modules/@capacitor/cli/dist/cli.js copy",
-    "cap:sync": "node node_modules/@capacitor/cli/dist/cli.js sync"
+    "prepare": "mkdir -p www && cp index.html style.css game.js www/",
+    "cap:sync": "npx cap sync",
+    "cap:open:android": "npx cap open android"
   },
   "dependencies": {
-    "@capacitor/core": "^6.0.0",
-    "@capacitor/android": "^6.0.0"
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0"
   }
 }
