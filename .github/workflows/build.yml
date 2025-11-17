@@ -9,24 +9,23 @@ jobs:
   build-android:
     name: 📦 Build Android APK via Capacitor
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: 📦 Checkout Repository
         uses: actions/checkout@v4
-
+      
       # Setup Java (Required for Android builds)
       - name: ☕ Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-
+        
       # Setup Node.js
       - name: 🛠️ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
       # Install Dependencies
       - name: ⬇️ Install Dependencies
@@ -43,7 +42,7 @@ jobs:
           if [ -f icon.png ]; then
             cp icon.png www/
           fi
-
+          
       # Add Android platform
       - name: 🤖 Add Android Platform
         run: npx cap add android
@@ -58,7 +57,7 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
-
+          
       # Upload APK Artifact
       - name: 📤 Upload APK Artifact
         uses: actions/upload-artifact@v4
