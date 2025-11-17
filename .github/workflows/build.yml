@@ -29,9 +29,23 @@ jobs:
 
       # Install Dependencies
       - name: ⬇️ Install Dependencies
+        run: npm install
+
+      # Prepare www directory with all assets
+      - name: 📂 Prepare Web Assets
         run: |
-          npm install
-          npm list @capacitor/cli ||
+          mkdir -p www
+          cp index.html www/
+          cp style.css www/
+          cp game.js www/
+          # Copy icon if it exists
+          if [ -f icon.png ]; then
+            cp icon.png www/
+          fi
+          
+      # Add Android platform
+      - name: 🤖 Add Android Platform
+        run: npx cap add android
 
       # Sync web assets to native project
       - name: 🔄 Sync Capacitor
